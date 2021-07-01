@@ -1,11 +1,9 @@
 //
-//  UITableViewCell.swift
-//  ViperEx
+//  PokemonMapper.swift
+//  Pokemon_Viper
 //
-//  Created by Pedro Alvarez on 05/01/20.
-//  Copyright © 2020 Pedro Alvarez. All rights reserved.
+//  Created by Gabriel on 01/07/21.
 //
-
 import UIKit
 
 protocol ReusableView: class {

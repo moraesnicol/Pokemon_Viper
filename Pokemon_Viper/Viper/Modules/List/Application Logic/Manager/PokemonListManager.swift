@@ -23,4 +23,3 @@ class PokemonListManager: PokemonListManagerInput {
         }
     }
 }
-
