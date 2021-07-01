@@ -10,7 +10,7 @@ import Foundation
 
 protocol PokemonListPresenterInput {
     var pokemonCount: Int { get }
-    var sortOptions: [String] { get }
+    var sortOptionsModel: [String] { get }
     var title: String { get }
     
     func viewDidLoad()
@@ -26,6 +26,8 @@ protocol PokemonListPresenterOutput: AnyObject {
 }
 
 class PokemonListPresenter: PokemonListPresenterInput {
+   
+    
     
     weak var output: PokemonListPresenterOutput?
     var interactor: PokemonListInteractorInput
@@ -33,11 +35,11 @@ class PokemonListPresenter: PokemonListPresenterInput {
     
     
     var pokemonCount: Int {
-       
+        return viewModel.count
     }
     
-    var sortOptions: [String] {
-        
+    var sortOptionsModel: [String] {
+        return sortOptionsToString(options: sortOptions)
     }
     
     var title: String {
@@ -71,35 +73,66 @@ class PokemonListPresenter: PokemonListPresenterInput {
     
     
     func viewDidLoad() {
-        <#code#>
+        output?.presentLoading()
+        DispatchQueue(label: "Fetch Pokemon").async {
+            self.interactor.fetch()
+        }
+        DispatchQueue(label: "Find Sort options").async {
+            self.interactor.findSortOptions()
+        }
     }
     
     func didSelectCell(at index: Int) {
-        <#code#>
+        let pokemon = viewModel[index]
+        let id = pokemon.id
+        
+        router.presentDetails(id)
     }
     
     func sortBy(selectedIndex: Int) {
-        <#code#>
+        sortedBy = sortOptions[selectedIndex]
     }
     
     func getPokemon(at index: Int) -> PokemonListItemViewModel {
-        <#code#>
+        return viewModel[index]
+        
     }
 }
 
 extension PokemonListPresenter {
     
+    private func sortOptionsToString(options: [SortType]) -> [String] {
+        
+        var sortOptions = [String]()
+        
+        for option in options {
+            sortOptions.append(option.rawValue)
+        }
+        return sortOptions
+    }
     
-    
-    
-    
-    
-    
+    private func sortPokemon(pokemons: [PokemonListItemViewModel]) -> [PokemonListItemViewModel] {
+        
+        switch sortedBy {
+        case .alphabetically: return pokemons.sorted(by: {$0.name < $1.name})
+        case .byId: return pokemons.sorted(by: {$0.id < $1.id})
+       
+        }
+    }
 }
 
 
-extension PokemonListPresenter: PokemonLisInteractorOutput {
- 
+extension PokemonListPresenter: PokemonListInteractorOutput {
+   
+    
+    func fetched(pokemons: [PokemonEntity]) {
+        self.viewModel = PokemonMapper.parse(from: pokemons)
+    }
+    
+    func foundSortOptions(_ options: [SortType]) {
+        self.sortOptions = options
+    }
+    
     
     
 }

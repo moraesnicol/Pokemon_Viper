@@ -13,7 +13,7 @@ protocol PokemonListInteractorInput {
     func findSortOptions()
 }
 
-
+    
 protocol PokemonListInteractorOutput: AnyObject {
     func fetched(pokemons: [PokemonEntity])
     func foundSortOptions(_ options: [SortType])
