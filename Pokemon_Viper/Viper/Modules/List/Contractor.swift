@@ -1,5 +1,5 @@
 //
-//  Presenter.swift
+//  Manager.swift
 //  Pokemon_Viper
 //
 //  Created by Gabriel on 29/06/21.
