@@ -39,8 +39,21 @@ class PokemonAPI {
         request(url: pokemonURL) {
             (json) in
             
-            guard let _json = json, let pokemon = Mapper<PokemonDetailsAPIModel>().
+            guard let _json = json, let pokemon = Mapper<PokemonDetailsAPIModel>().map(JSON: _json ) else {
+                
+                return
+            }
+            completion(pokemon)
         }
-        
-        
     }
+
+    private func request(url: String, completion: @escaping ([String: Any]?) -> ()) {
+        
+        guard let url = URL(string: url) else { return }
+        
+        let _ = Alamofire.request(url, method: .get, encoding: JSONEncoding.default).responseJSON(completionHandler: { (response) in
+            
+            completion(response.result.value as? [String : Any])
+        })
+    }
+}
